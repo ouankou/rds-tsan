@@ -61,6 +61,7 @@ def upload():
             name = ""
         print(name)
         cmd_list = [
+            "rm -rf /home/rds/dataracebench/micro-benchmarks/*",
             "cp " + os.path.join(app.config['UPLOAD_FOLDER'], name) + " /home/rds/dataracebench/micro-benchmarks/.",
             "/home/rds/dataracebench/check.sh"
          ]
