@@ -63,7 +63,7 @@ def upload():
         cmd_list = [
             "rm -rf /home/rds/dataracebench/micro-benchmarks/*",
             "cp " + os.path.join(app.config['UPLOAD_FOLDER'], name) + " /home/rds/dataracebench/micro-benchmarks/.",
-            "/home/rds/dataracebench/check.sh"
+            "/home/rds/rds-tsan/check.sh"
          ]
         for cmd in cmd_list:
             result = run(cmd.split(), stdout=PIPE, stderr=PIPE, universal_newlines=True)
