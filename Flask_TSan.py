@@ -54,7 +54,6 @@ def upload():
                 print("file is empty")
                 name = ""
             else:
-                # f.save(secure_filename(f.filename))
                 filename = secure_filename(f.filename)
                 f.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 name = f.filename
@@ -63,30 +62,19 @@ def upload():
         print(name)
         cmd_list = [
             "cp " + os.path.join(app.config['UPLOAD_FOLDER'], name) + " /home/rds/dataracebench/micro-benchmarks/.",
-            "/home/rds/dataracebench/scripts/test-harness.sh -d 32 -x tsan-clang"
+            "/home/rds/dataracebench/check.sh"
          ]
-        '''
-        cmd_list = [
-            "clang " + os.path.join(app.config['UPLOAD_FOLDER'], name) +
-            " -fopenmp -fsanitize=thread -fPIE -pie -g -o " +
-            os.path.join(app.config['UPLOAD_FOLDER'], "myApp"),
-            os.path.join(app.config['UPLOAD_FOLDER'], "myApp")
-        ]
-        '''
         for cmd in cmd_list:
-            result = run(cmd, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+            result = run(cmd.split(), stdout=PIPE, stderr=PIPE, universal_newlines=True)
         if result.returncode == 1:
             output = result.stderr
         else:
             output = result.stdout
-        #print(output)
-        if not output:
-            output = '{}'
-        jsonResult = logjson.jsonify("/home/rds/dataracebench/result/log/" + name + "parser.log")
+        jsonResult = logjson.jsonify("/home/rds/dataracebench/results/log/" + name + ".tsan-clang.parser.log")
         if request.args.get('type') == 'json':
             return flask.make_response(jsonResult, 200)
         else:
-            return render_template('index.html', val=str.split('\n'))
+            return render_template('index.html', val=output.split('\n'))
 
 
 if __name__ == '__main__':
