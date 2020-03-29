@@ -65,6 +65,7 @@ def upload():
         # 3. Run the test and generate the log file.
         cmd_list = [
             "rm -rf /home/rds/dataracebench/micro-benchmarks/*",
+            "rm -rf /home/rds/dataracebench/results/*",
             "cp " + os.path.join(app.config['UPLOAD_FOLDER'], name) + " /home/rds/dataracebench/micro-benchmarks/.",
             "/home/rds/rds-tsan/check.sh"
          ]
