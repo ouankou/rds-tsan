@@ -1,7 +1,10 @@
 FROM ouankou/rds:threadsanitizer
 
+USER rds
 RUN git clone https://github.com/ouankou/rds-tsan.git
-
+RUN git clone https://github.com/World-Worst-Detector/dataracebench.git
+RUN cd /home/rds/dataracebench/micro-benchmarks && \
+    rm *.c
 COPY ["start.sh", "/home/rds/"]
 
-ENTRYPOINT ["/home/rds/rds-tsan/start.sh"]
+ENTRYPOINT /home/rds/start.sh && /bin/bash

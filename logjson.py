@@ -2,6 +2,18 @@ import sys
 import json
 import csv
 
+def jsonify(filename):
+    logFile = open(filename, 'r')
+    result = {}
+    index = 0
+    for row in logFile:
+        data = json.loads(row)
+        result[str(index)] = data
+        index += 1
+
+    return json.dumps(result, indent=4)
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) == 3:
