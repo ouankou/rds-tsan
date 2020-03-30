@@ -7,7 +7,7 @@ import subprocess
 import time
 from werkzeug import secure_filename
 import logjson
-UPLOAD_FOLDER = '/tmp/'
+UPLOAD_FOLDER = '/tmp/rds'
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -46,6 +46,10 @@ def benchmark():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
+    try:
+        os.makedirs(UPLOAD_FOLDER)
+    except FileExistsError:
+        pass
     name = ""
     if request.method == "POST":
         if 'file' in request.files:
@@ -64,17 +68,10 @@ def upload():
         # 2. Copy the received input file to the benchmark folder.
         # 3. Run the test and generate the log file.
         cmd_list = [
-            "rm -rf /home/rds/dataracebench/micro-benchmarks/*",
-            "rm -rf /home/rds/dataracebench/results/*",
-            "cp " + os.path.join(app.config['UPLOAD_FOLDER'], name) + " /home/rds/dataracebench/micro-benchmarks/.",
             "/home/rds/rds-tsan/check.sh"
          ]
         for cmd in cmd_list:
-            result = run(cmd.split(), stdout=PIPE, stderr=PIPE, universal_newlines=True)
-        if result.returncode == 1:
-            output = result.stderr
-        else:
-            output = result.stdout
+            result = run(cmd.split(), universal_newlines=True)
 
         # The output log may not exist because the tool doesn't support the input.
         # In this case, an empty JSON response will be returned.
